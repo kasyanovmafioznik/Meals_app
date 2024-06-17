@@ -2,53 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals/providers/filters_provider.dart';
 
-class FiltersScreen extends ConsumerStatefulWidget {
+class FiltersScreen extends ConsumerWidget {
   const FiltersScreen({super.key});
 
   @override
-  ConsumerState<FiltersScreen> createState() => _FiltersScreenState();
-}
-
-class _FiltersScreenState extends ConsumerState<FiltersScreen> {
-  var _gluttenFreeFilterSet = false;
-  var _lactoseFreeFilterSet = false;
-  var _vegetarianFreeFilterSet = false;
-  var _veganFreeFilterSet = false;
-  @override
-  void initState() {
-    final activefilters = ref.read(filtersProvider);
-    _gluttenFreeFilterSet = activefilters[Filter.glutenFree]!;
-    _lactoseFreeFilterSet = activefilters[Filter.lactoseFree]!;
-    _vegetarianFreeFilterSet = activefilters[Filter.vegetarian]!;
-    _veganFreeFilterSet = activefilters[Filter.vegan]!;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeFilters =  ref.watch(filtersProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Filters'),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
-          ref.read(filtersProvider.notifier).setFilters({
-            Filter.glutenFree: _gluttenFreeFilterSet,
-            Filter.lactoseFree: _lactoseFreeFilterSet,
-            Filter.vegetarian: _vegetarianFreeFilterSet,
-            Filter.vegan: _veganFreeFilterSet,
-          });
-          //Navigator.of(context).pop({});
-          return true;
-        },
-        child: Column(
+      body: Column(
           children: [
             SwitchListTile(
-              value: _gluttenFreeFilterSet,
+              value: activeFilters[Filter.glutenFree]!,
               onChanged: (isChecked) {
-                setState(() {
-                  _gluttenFreeFilterSet = isChecked;
-                });
+                ref.read(filtersProvider.notifier).setFilter(Filter.glutenFree, isChecked);
               },
               title: Text(
                 "Glutten-free",
@@ -66,11 +35,9 @@ class _FiltersScreenState extends ConsumerState<FiltersScreen> {
               contentPadding: const EdgeInsets.only(left: 34, right: 22),
             ),
             SwitchListTile(
-              value: _lactoseFreeFilterSet,
+              value: activeFilters[Filter.lactoseFree]!,
               onChanged: (isChecked) {
-                setState(() {
-                  _lactoseFreeFilterSet = isChecked;
-                });
+                ref.read(filtersProvider.notifier).setFilter(Filter.lactoseFree, isChecked);
               },
               title: Text(
                 "Lactose-free",
@@ -88,11 +55,9 @@ class _FiltersScreenState extends ConsumerState<FiltersScreen> {
               contentPadding: const EdgeInsets.only(left: 34, right: 22),
             ),
             SwitchListTile(
-              value: _vegetarianFreeFilterSet,
+              value: activeFilters[Filter.vegetarian]!,
               onChanged: (isChecked) {
-                setState(() {
-                  _vegetarianFreeFilterSet = isChecked;
-                });
+                   ref.read(filtersProvider.notifier).setFilter(Filter.vegetarian, isChecked);
               },
               title: Text(
                 "Vegetarian-free",
@@ -110,11 +75,9 @@ class _FiltersScreenState extends ConsumerState<FiltersScreen> {
               contentPadding: const EdgeInsets.only(left: 34, right: 22),
             ),
             SwitchListTile(
-              value: _veganFreeFilterSet,
+              value: activeFilters[Filter.vegan]!,
               onChanged: (isChecked) {
-                setState(() {
-                  _veganFreeFilterSet = isChecked;
-                });
+                 ref.read(filtersProvider.notifier).setFilter(Filter.vegan, isChecked);
               },
               title: Text(
                 "Vegan-free",
@@ -133,7 +96,6 @@ class _FiltersScreenState extends ConsumerState<FiltersScreen> {
             )
           ],
         ),
-      ),
     );
   }
 }
