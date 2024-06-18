@@ -16,27 +16,40 @@ class MealItemScreen extends ConsumerWidget {
         title: Text(meal.title),
         actions: [
           IconButton(
-              onPressed: () {
-                final wasAdded = ref
-                    .read(favouriteMealsProvider.notifier)
-                    .toggleMealFavouriteStatus(meal);
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(wasAdded
-                        ? 'Meal added as favourite'
-                        : 'Meal removed from favourite')));
+            onPressed: () {
+              final wasAdded = ref
+                  .read(favouriteMealsProvider.notifier)
+                  .toggleMealFavouriteStatus(meal);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(wasAdded
+                      ? 'Meal added as favourite'
+                      : 'Meal removed from favourite')));
+            },
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) {
+                return RotationTransition(
+                  turns: Tween<double>(begin: 0.8, end: 1,).animate(animation),
+                  child: child,
+                );
               },
-              icon: Icon(isFavourite ? Icons.star : Icons.star_border))
+              child: Icon(isFavourite ? Icons.star : Icons.star_border, key: ValueKey(isFavourite) ,),
+            ),
+          )
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.network(
-              meal.imageUrl,
-              height: 300,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            Hero(
+              tag: meal.id,
+              child: Image.network(
+                meal.imageUrl,
+                height: 300,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(
               height: 14,
